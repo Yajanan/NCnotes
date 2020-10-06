@@ -57,6 +57,13 @@ public class Main {
         }
     }
 
+    static void chooseNote(){
+        System.out.println("Please type the filename which you want to read:");
+        String filename = s.next();
+        File f = new File("./notes/" + filename);
+        displayNote(getFileContent(f));
+    }
+
     public static void main(String[] args) {
         System.out.println("Welcome to NCnotes!");
         System.out.println("Please type what you want to do:");
@@ -72,6 +79,7 @@ public class Main {
             case "S":
             case "s":
                 showPath();
+                chooseNote();
                 break;
             default:
                 break;
