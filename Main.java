@@ -9,6 +9,7 @@ import java.awt.*;
 public class Main {
     
     private static JFrame jf;
+    private static JList<String> dirList;
     
     static Scanner s = new Scanner(System.in);
 
@@ -57,9 +58,7 @@ public class Main {
         File f = new File("./notes/");
         String[] notesList = f.list();
         if(notesList != null){
-            for(String note : notesList){
-                System.out.println(note);
-            }
+            dirList.setListData(notesList);
         }
     }
 
@@ -82,7 +81,7 @@ public class Main {
 
         JPanel leftPanel = new JPanel(new BorderLayout());
 
-        JList<String> dirList = new JList<>();
+        dirList = new JList<>();
 
         dirList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
@@ -142,6 +141,7 @@ public class Main {
 
     public static void main(String[] args) {
         drawWindow();
+        showPath();
         s.close();
     }
 }
