@@ -10,13 +10,15 @@ public class Main {
     
     private static JFrame jf;
     private static JList<String> dirList;
+    private static JTextArea contentArea;
     
     static Scanner s = new Scanner(System.in);
 
 
 
     static void displayNote(String content){
-        System.out.println(content);
+        contentArea.setText(content);
+        contentArea.setCaretPosition(0);
     }
 
     static String getFileContent(File f){
@@ -33,15 +35,14 @@ public class Main {
     }
 
     static void newFile(){
-        System.out.println("Please type the filename:");
-        String filename = s.next();
+        String filename = JOptionPane.showInputDialog(jf, "请输入文件名：");
         
-        System.out.println("Please type the content:");
-        String content = s.next();
-
-        File f = new File("./notes/" + filename);
-
-        writeFile(f, content);
+        if(filename != null){
+            File f = new File("./notes/" + filename);
+            writeFile(f, "");
+            showPath();
+            displayNote(getFileContent(f));
+        }
     }
 
     static void writeFile(File f, String content){
@@ -97,6 +98,8 @@ public class Main {
 
         JButton jbNew = new JButton("New");
 
+        jbNew.addActionListener(e -> newFile());
+
 
         JButton jbDelete = new JButton("Delete");
 
@@ -123,7 +126,7 @@ public class Main {
 
         editPanel.add(jbEditAndSave);
 
-        JTextArea contentArea = new JTextArea();
+        contentArea = new JTextArea();
         contentArea.setLineWrap(true);
         contentArea.setEditable(false);
         contentArea.setFont(new Font("宋体",Font.PLAIN,18));
