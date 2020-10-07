@@ -11,6 +11,7 @@ public class Main {
     private static JFrame jf;
     private static JList<String> dirList;
     private static JTextArea contentArea;
+    private static JButton jbEditAndSave;
     
     static Scanner s = new Scanner(System.in);
 
@@ -42,6 +43,10 @@ public class Main {
             writeFile(f, "");
             showPath();
             displayNote(getFileContent(f));
+            
+            contentArea.setEditable(true);
+            contentArea.requestFocus();
+            jbEditAndSave.setText("Save");
         }
     }
 
@@ -101,6 +106,21 @@ public class Main {
         }
     }
 
+    static void editNote(){
+        if(jbEditAndSave.getText().equals("Edit")){
+            jbEditAndSave.setText("Save");
+            contentArea.setEditable(true);
+            contentArea.requestFocus();
+        }else{
+            jbEditAndSave.setText("Edit");
+            String filename = dirList.getSelectedValue();
+            File f = new File("./notes/" + filename);
+            String content = contentArea.getText();
+            writeFile(f, content);
+            contentArea.setEditable(false);
+        }
+    }
+
     static void drawWindow(){
         jf = new JFrame("NoteController");
         jf.setResizable(false);
@@ -157,7 +177,9 @@ public class Main {
         JPanel rightPanel = new JPanel(new BorderLayout());
 
         JPanel editPanel = new JPanel();
-        JButton jbEditAndSave = new JButton("Edit");
+        jbEditAndSave = new JButton("Edit");
+
+        jbEditAndSave.addActionListener(e -> editNote());
 
         editPanel.add(jbEditAndSave);
 
