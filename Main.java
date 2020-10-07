@@ -64,10 +64,15 @@ public class Main {
     }
 
     static void chooseNote(){
-        System.out.println("Please type the filename which you want to read:");
-        String filename = s.next();
-        File f = new File("./notes/" + filename);
-        displayNote(getFileContent(f));
+        int[] indices = dirList.getSelectedIndices();
+        ListModel<String> listModel = dirList.getModel();
+        if(dirList.getValueIsAdjusting()){
+            for(int index : indices){
+                String filename = listModel.getElementAt(index);
+                File f = new File("./notes/" + filename);
+                displayNote(getFileContent(f));
+            }
+        }
     }
 
     static void drawWindow(){
@@ -85,6 +90,8 @@ public class Main {
         dirList = new JList<>();
 
         dirList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+        dirList.addListSelectionListener(e -> chooseNote());
 
         leftPanel.add(dirList,BorderLayout.CENTER);
 
