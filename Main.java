@@ -75,6 +75,32 @@ public class Main {
         }
     }
 
+    static void deleteFile(File f){
+        try{
+            if(f.delete()){
+                JOptionPane.showMessageDialog(jf, "删除成功！");
+            }else{
+                JOptionPane.showMessageDialog(jf, "删除失败！");
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    static void deleteNote(){
+        int confirm = JOptionPane.showConfirmDialog(jf, "确认删除？", "删除提醒", JOptionPane.YES_NO_CANCEL_OPTION);
+        if(confirm == JOptionPane.YES_OPTION){
+            String filename = dirList.getSelectedValue();
+            if(filename != null){
+                File f = new File("./notes/" + filename);
+                deleteFile(f);
+                showPath();
+                displayNote("");
+            }
+
+        }
+    }
+
     static void drawWindow(){
         jf = new JFrame("NoteController");
         jf.setResizable(false);
@@ -109,6 +135,8 @@ public class Main {
 
 
         JButton jbDelete = new JButton("Delete");
+
+        jbDelete.addActionListener(e -> deleteNote());
 
         hBox1.add(jbNew);
         hBox1.add(jbDelete);
