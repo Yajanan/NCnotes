@@ -3,10 +3,16 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
+import javax.swing.*;
+import java.awt.*;
 
 public class Main {
     
+    private static JFrame jf;
+    
     static Scanner s = new Scanner(System.in);
+
+
 
     static void displayNote(String content){
         System.out.println(content);
@@ -64,27 +70,78 @@ public class Main {
         displayNote(getFileContent(f));
     }
 
+    static void drawWindow(){
+        jf = new JFrame("NoteController");
+        jf.setResizable(false);
+        jf.setLocationRelativeTo(null);
+        jf.setSize(600,800);
+        jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        JSplitPane jsp = new JSplitPane();
+        jsp.setDividerLocation(155);
+
+        JPanel leftPanel = new JPanel(new BorderLayout());
+
+        JList<String> dirList = new JList<>();
+
+        dirList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+        leftPanel.add(dirList,BorderLayout.CENTER);
+
+        JPanel ctrlPanel = new JPanel();
+
+        Box hBox1 = Box.createHorizontalBox();
+
+        Box hBox2 = Box.createHorizontalBox();
+
+        Box vBox = Box.createVerticalBox();
+
+        JButton jbNew = new JButton("New");
+
+
+        JButton jbDelete = new JButton("Delete");
+
+        hBox1.add(jbNew);
+        hBox1.add(jbDelete);
+
+        JButton jbSetting = new JButton("Setting");
+
+        hBox2.add(jbSetting);
+
+        vBox.add(hBox1);
+        vBox.add(hBox2);
+
+        ctrlPanel.add(vBox);
+
+        leftPanel.add(ctrlPanel,BorderLayout.SOUTH);
+
+        jsp.setLeftComponent(leftPanel);
+
+        JPanel rightPanel = new JPanel(new BorderLayout());
+
+        JPanel editPanel = new JPanel();
+        JButton jbEditAndSave = new JButton("Edit");
+
+        editPanel.add(jbEditAndSave);
+
+        JTextArea contentArea = new JTextArea();
+        contentArea.setLineWrap(true);
+        contentArea.setEditable(false);
+        contentArea.setFont(new Font("宋体",Font.PLAIN,18));
+
+        JScrollPane contentScroll = new JScrollPane(contentArea,ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+
+        rightPanel.add(editPanel, BorderLayout.NORTH);
+        rightPanel.add(contentScroll, BorderLayout.CENTER);
+
+        jsp.setRightComponent(rightPanel);
+
+        jf.add(jsp);
+        jf.setVisible(true);
+    }
+
     public static void main(String[] args) {
-        System.out.println("Welcome to NCnotes!");
-        System.out.println("Please type what you want to do:");
-        System.out.println("N/n:new S/s:show path");
-
-        String commend = s.next();
-
-        switch(commend){
-            case "N":
-            case "n":
-                newFile();
-                break;
-            case "S":
-            case "s":
-                showPath();
-                chooseNote();
-                break;
-            default:
-                break;
-        }
-        
+        drawWindow();
         s.close();
     }
 }
