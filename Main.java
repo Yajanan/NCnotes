@@ -2,20 +2,54 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Scanner;
 import javax.swing.*;
 import java.awt.*;
 
 public class Main {
+
+    static String configPath;
+    static String configFileName;
     
     private static JFrame jf;
     private static JList<String> dirList;
     private static JTextArea contentArea;
     private static JButton jbEditAndSave;
+
+    static void importConfig() {
+        File f = new File("./config.txt");
+        if(f.exists()){
+            configPath = getFileContent(f);
+        }else{
+            setConfig();
+        }
+    }
+
+    static void setConfig() {
+        File f = new File("./config.txt");
+        if(!f.exists()){
+            configPath = "./notes/";
+            writeFile(f, configPath);
+        }else {
+            if(f.delete()){
+                openFileChooser();
+            }
+        }
+    }
+
+    static void openFileChooser() {
+        JFileChooser jfc = new JFileChooser();
+        jfc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        jfc.setMultiSelectionEnabled(false);
+
+        int result = jfc.showOpenDialog(jfc);
+        if(result == JFileChooser.APPROVE_OPTION) {
+            configPath = jfc.getSelectedFile().getPath() + "\\";
+        }
+
+        File f = new File("./config.txt");
+        writeFile(f, configPath);
+    }
     
-    static Scanner s = new Scanner(System.in);
-
-
 
     static void displayNote(String content){
         contentArea.setText(content);
@@ -36,10 +70,10 @@ public class Main {
     }
 
     static void newFile(){
-        String filename = JOptionPane.showInputDialog(jf, "请输入文件名：");
+        configFileName = JOptionPane.showInputDialog(jf, "请输入文件名：");
         
-        if(filename != null){
-            File f = new File("./notes/" + filename);
+        if(configFileName != null){
+            File f = new File(configPath + configFileName);
             writeFile(f, "");
             showPath();
             displayNote(getFileContent(f));
@@ -61,7 +95,7 @@ public class Main {
     }
 
     static void showPath(){
-        File f = new File("./notes/");
+        File f = new File(configPath);
         String[] notesList = f.list();
         if(notesList != null){
             dirList.setListData(notesList);
@@ -73,8 +107,8 @@ public class Main {
         ListModel<String> listModel = dirList.getModel();
         if(dirList.getValueIsAdjusting()){
             for(int index : indices){
-                String filename = listModel.getElementAt(index);
-                File f = new File("./notes/" + filename);
+                configFileName = listModel.getElementAt(index);
+                File f = new File(configPath + configFileName);
                 displayNote(getFileContent(f));
             }
         }
@@ -95,9 +129,9 @@ public class Main {
     static void deleteNote(){
         int confirm = JOptionPane.showConfirmDialog(jf, "确认删除？", "删除提醒", JOptionPane.YES_NO_CANCEL_OPTION);
         if(confirm == JOptionPane.YES_OPTION){
-            String filename = dirList.getSelectedValue();
-            if(filename != null){
-                File f = new File("./notes/" + filename);
+            configFileName = dirList.getSelectedValue();
+            if(configFileName != null){
+                File f = new File(configPath + configFileName);
                 deleteFile(f);
                 showPath();
                 displayNote("");
@@ -113,8 +147,8 @@ public class Main {
             contentArea.requestFocus();
         }else{
             jbEditAndSave.setText("Edit");
-            String filename = dirList.getSelectedValue();
-            File f = new File("./notes/" + filename);
+            configFileName = dirList.getSelectedValue();
+            File f = new File(configPath + configFileName);
             String content = contentArea.getText();
             writeFile(f, content);
             contentArea.setEditable(false);
@@ -163,6 +197,11 @@ public class Main {
 
         JButton jbSetting = new JButton("Setting");
 
+        jbSetting.addActionListener(e -> {
+            setConfig();
+            showPath();
+        });
+
         hBox2.add(jbSetting);
 
         vBox.add(hBox1);
@@ -200,8 +239,8 @@ public class Main {
     }
 
     public static void main(String[] args) {
+        importConfig();
         drawWindow();
         showPath();
-        s.close();
     }
 }
