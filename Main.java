@@ -28,6 +28,11 @@ public class Main {
         File f = new File("./config.txt");
         if(!f.exists()){
             configPath = "./notes/";
+            File fc = new File(configPath);
+            if(!fc.exists()){
+                fc.mkdirs();
+                createHelpText();
+            }
             writeFile(f, configPath);
         }else {
             if(f.delete()){
@@ -44,6 +49,13 @@ public class Main {
         int result = jfc.showOpenDialog(jfc);
         if(result == JFileChooser.APPROVE_OPTION) {
             configPath = jfc.getSelectedFile().getPath() + "\\";
+        }
+
+        File fc = new File(configPath);
+
+        if(!fc.exists()){
+            fc.mkdirs();
+            createHelpText();
         }
 
         File f = new File("./config.txt");
@@ -152,6 +164,14 @@ public class Main {
             String content = contentArea.getText();
             writeFile(f, content);
             contentArea.setEditable(false);
+        }
+    }
+
+    static void createHelpText(){
+        String helpContent = "帮助：点击New新建文件，点击Delete删除文件，点击Edit进行编辑，点击Setting修改默认目录";
+        File f = new File(configPath + "help");
+        if(!f.exists()){
+            writeFile(f, helpContent);
         }
     }
 
